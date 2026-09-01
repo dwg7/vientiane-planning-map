@@ -45,26 +45,55 @@
 
   .legend-row { display: flex; align-items: flex-start; gap: 6px; margin: 3px 0; font-size: 11.5px; }
   .swatch { width: 12px; height: 12px; border-radius: 2px; flex: none; margin-top: 2px; }
-  .line-swatch { width: 16px; height: 2px; flex: none; margin-top: 6px; }
+  .line-swatch { width: 16px; height: 0; flex: none; margin-top: 6px; border-top: 2px solid rgb(110,110,110); }
+  .line-swatch.dashed { border-top-style: dashed; }
 
+  /* Hover panel: the zone name is the headline (large, bold -- the one
+     thing a first-time visitor needs to read to understand the site), the
+     three regulatory numbers get vivid stat chips, and the raw field dump
+     stays small underneath for anyone who wants it. Modeled on how NYC
+     Planning Labs' ZoLa (zola.planning.nyc.gov) foregrounds a parcel's
+     zoning district over its finer attributes. */
   #hover-panel {
     position: absolute;
     bottom: 8px;
     left: 8px;
     width: fit-content;
-    max-width: 260px;
-    background: rgba(20, 20, 24, 0.88);
-    color: #f5e3d6;
-    border-radius: 5px;
-    padding: 4px 7px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-    font: 10px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    max-width: 300px;
+    background: rgba(20, 20, 24, 0.92);
+    color: #f5f0ea;
+    border-radius: 7px;
+    padding: 8px 10px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.35);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     z-index: 1;
     display: none;
   }
   #hover-panel.visible { display: block; }
-  #hover-panel .hp-row { white-space: pre-wrap; word-break: break-word; }
-  #hover-panel .hp-key { color: #d8a87f; }
+  .hp-headline { display: flex; align-items: baseline; gap: 6px; margin-bottom: 6px; }
+  .hp-code {
+    font-size: 11px;
+    font-weight: 700;
+    background: #ffb454;
+    color: #221a08;
+    border-radius: 4px;
+    padding: 1px 5px;
+    flex: none;
+  }
+  .hp-name { font-size: 15px; font-weight: 700; line-height: 1.25; }
+  .hp-stats { display: flex; gap: 12px; }
+  .hp-stat { text-align: center; }
+  .hp-stat-value { font-size: 18px; font-weight: 700; color: #ffb454; line-height: 1.1; }
+  .hp-stat-unit { font-size: 10px; font-weight: 400; color: #d8a87f; margin-left: 1px; }
+  .hp-stat-label { font-size: 9px; color: #b7b2ab; text-transform: uppercase; letter-spacing: 0.02em; margin-top: 1px; }
+  .hp-raw {
+    margin-top: 6px;
+    padding-top: 5px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    font: 9px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: #8a8680;
+    word-break: break-word;
+  }
 
   #legal {
     position: absolute;
@@ -97,8 +126,8 @@
       service.
     </p>
     <h2>Basemap linework</h2>
-    <div class="legend-row"><span class="line-swatch" style="background:rgb(120,122,118)"></span> building outline (OSM-sourced)</div>
-    <div class="legend-row"><span class="line-swatch" style="background:rgb(200,201,198)"></span> building outline (not in OSM)</div>
+    <div class="legend-row"><span class="line-swatch"></span> building outline (OSM-sourced)</div>
+    <div class="legend-row"><span class="line-swatch dashed"></span> building outline (not in OSM)</div>
     <h2>Zoning (GLUP2030)</h2>
     <div id="zone-legend"></div>
   </div>
@@ -110,7 +139,8 @@
   Zoning: <a href="https://virgo.mpwt.gov.la/" target="_blank" rel="noopener">Virgo</a> (MPWT Laos) ·
   Buildings: <a href="https://docs.overturemaps.org/" target="_blank" rel="noopener">Overture Maps</a> /
   <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OSM</a> contributors<br>
-  Design concept: <a href="https://www.sonicweb-asp.jp/sapporo/" target="_blank" rel="noopener">さっぽろ都市計画情報提供サービス</a>
+  Design concept: <a href="https://www.sonicweb-asp.jp/sapporo/" target="_blank" rel="noopener">さっぽろ都市計画情報提供サービス</a> ·
+  <a href="https://zola.planning.nyc.gov/" target="_blank" rel="noopener">ZoLa</a> (NYC Planning Labs)
 </div>
 
 <script type="module" src="app.js"></script>

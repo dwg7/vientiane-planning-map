@@ -40,8 +40,15 @@ const ZONING_URL = "https://stars.optgeo.org/glup2030_zoning/{z}/{x}/{y}";
 const DEFAULT_VIEW = { center: [102.61, 17.97], zoom: 14 };
 
 const LINE_COLOR = "rgb(180, 182, 178)";
-const BUILDING_OSM_COLOR = "rgb(120, 122, 118)";
-const BUILDING_NON_OSM_COLOR = "rgb(200, 201, 198)";
+
+// Both OSM-sourced and non-OSM building outlines share this one gray value.
+// A prior version distinguished them by lightness (dark vs faint gray), but
+// sitting on top of the zoning fill's saturated, meaningful hues, a lightness
+// difference reads as if it were *also* meaningful -- like a second, competing
+// legend. Keeping value/hue fixed and switching the visual channel instead
+// (dashed vs solid, thin vs slightly thicker) keeps "is this in OSM" legible
+// without stealing attention from the zoning color coding.
+const BUILDING_LINE_COLOR = "rgb(110, 110, 110)";
 
 // Does `sources` (a JSON array of {provider, ...} objects, serialized as a
 // string) mention OSM as one of the fused providers at all? Reused verbatim
@@ -162,25 +169,30 @@ async function main() {
         "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.5, 16, 1.5],
       },
     },
+    // Zone codes rendered directly on the map, bold and reasonably large --
+    // modeled on NYC Planning Labs' ZoLa (zola.planning.nyc.gov), which
+    // labels every zoning district this way at parcel zoom.
     {
       id: "zoning-label",
       type: "symbol",
       source: "zoning",
       "source-layer": "zoning",
-      minzoom: 11,
+      minzoom: 10,
       layout: {
         "text-field": ["get", "zoning"],
-        "text-size": 11,
-        "text-font": ["Noto Sans Regular"],
+        "text-size": 14,
+        "text-font": ["Noto Sans Bold"],
       },
       paint: {
-        "text-color": "#333333",
+        "text-color": "#2a2a2a",
         "text-halo-color": "#ffffff",
-        "text-halo-width": 1,
+        "text-halo-width": 1.4,
       },
     },
     // Buildings on top of zoning, distinguished only by OSM involvement --
-    // no height/floor logic here, unlike height-coverage.
+    // no height/floor logic here, unlike height-coverage. Same color for
+    // both (see BUILDING_LINE_COLOR); dashed + slightly thinner for
+    // non-OSM instead of a lighter tone.
     {
       id: "buildings-non-osm",
       type: "line",
@@ -188,7 +200,11 @@ async function main() {
       "source-layer": "building",
       minzoom: 13,
       filter: ["!", HAS_OSM_SOURCE],
-      paint: { "line-color": BUILDING_NON_OSM_COLOR, "line-width": 0.5, "line-opacity": 0.6 },
+      paint: {
+        "line-color": BUILDING_LINE_COLOR,
+        "line-width": 0.5,
+        "line-dasharray": [1, 1.4],
+      },
     },
     {
       id: "buildings-osm",
@@ -197,7 +213,7 @@ async function main() {
       "source-layer": "building",
       minzoom: 12,
       filter: HAS_OSM_SOURCE,
-      paint: { "line-color": BUILDING_OSM_COLOR, "line-width": 0.7 },
+      paint: { "line-color": BUILDING_LINE_COLOR, "line-width": 0.8 },
     }
   );
 
@@ -250,9 +266,13 @@ function buildZoneLegend() {
     .join("");
 }
 
-// Just the fields the zoning-fill/zoning-label layers and the color match
-// above actually read, per height-coverage's hover-panel convention (avoid a
-// full attribute dump).
+// The zone name is the headline -- large and bold, since it's the one thing
+// that tells a first-time visitor what this map is even about. The three
+// regulatory numbers (height/coverage/FAR) get their own vivid stat chips
+// rather than being buried in a plain key:value list. The raw field dump
+// stays too, small and monospace, for anyone who wants the underlying
+// attribute names -- per height-coverage's hover-panel convention (only the
+// fields the layers above actually read, not a full attribute dump).
 function showHoverInfo(feature) {
   const panel = document.getElementById("hover-panel");
   if (!feature) {
@@ -261,16 +281,27 @@ function showHoverInfo(feature) {
     return;
   }
   const p = feature.properties;
-  const rows = [
-    ["zoning", p.zoning],
-    ["zone_name", p.zone_name],
-    ["h (height limit, m)", p.h],
-    ["e (coverage ratio)", p.e],
-    ["cos (floor area ratio)", p.cos],
-  ];
-  panel.innerHTML = rows
-    .map(([k, v]) => `<div class="hp-row"><span class="hp-key">${escapeHtml(k)}</span>: ${escapeHtml(String(v))}</div>`)
-    .join("");
+  panel.innerHTML = `
+    <div class="hp-headline">
+      <span class="hp-code">${escapeHtml(p.zoning)}</span>
+      <span class="hp-name">${escapeHtml(p.zone_name)}</span>
+    </div>
+    <div class="hp-stats">
+      <div class="hp-stat">
+        <div class="hp-stat-value">${escapeHtml(String(p.h))}<span class="hp-stat-unit">m</span></div>
+        <div class="hp-stat-label">height limit</div>
+      </div>
+      <div class="hp-stat">
+        <div class="hp-stat-value">${escapeHtml(String(Math.round(p.e * 100)))}<span class="hp-stat-unit">%</span></div>
+        <div class="hp-stat-label">coverage (e)</div>
+      </div>
+      <div class="hp-stat">
+        <div class="hp-stat-value">${escapeHtml(String(Math.round(p.cos * 100)))}<span class="hp-stat-unit">%</span></div>
+        <div class="hp-stat-label">floor area ratio (cos)</div>
+      </div>
+    </div>
+    <div class="hp-raw">zoning=${escapeHtml(p.zoning)} h=${escapeHtml(String(p.h))} e=${escapeHtml(String(p.e))} cos=${escapeHtml(String(p.cos))}</div>
+  `;
   panel.classList.add("visible");
 }
 
@@ -279,11 +310,10 @@ function showZoningPopup(map, e) {
   new maplibregl.Popup()
     .setLngLat(e.lngLat)
     .setHTML(
-      `<h4>${escapeHtml(p.zoning)}</h4>
-       <p>${escapeHtml(p.zone_name)}</p>
+      `<h4>${escapeHtml(p.zoning)} — ${escapeHtml(p.zone_name)}</h4>
        <p>Height limit: ${escapeHtml(String(p.h))} m<br>
-       Coverage ratio (e): ${escapeHtml(String(p.e))}<br>
-       Floor area ratio (cos): ${escapeHtml(String(p.cos))}</p>`
+       Coverage ratio (e): ${escapeHtml(String(Math.round(p.e * 100)))}%<br>
+       Floor area ratio (cos): ${escapeHtml(String(Math.round(p.cos * 100)))}%</p>`
     )
     .addTo(map);
 }

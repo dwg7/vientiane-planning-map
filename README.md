@@ -34,11 +34,13 @@ https://dwg7.github.io/vientiane-planning-map/
 - 静的サイト（`docs/`配下、ビルド工程なし）、MapLibre GL JS 6.6.0（ESモジュール、`hash: "map"`）
 - Mercator投影固定（globe不使用 — 単一都市が対象で、fill-extrusionレイヤーも使わないため）
 - `docs/app.js` はheight-coverageと同じ手法（Positronスタイルをfetch→加工→Map生成）を採用
+- ホバーパネル・ゾーニングラベルのUIは、独自性より先行者の知恵を優先する方針のもと、さっぽろのサービスとNYC Planning LabsのZoLaのパターンを取り込んでいる（ゾーンコードを地図上に太字で直接ラベル表示、ホバー時にゾーン名を大きく・規制値をビビッドに表示、等）
 
 ## 謝辞
 
 - **Virgo**（ラオス公共事業運輸省データ共有基盤）: https://virgo.mpwt.gov.la/ — データセット `glup2030_cdudcp_v1`
 - **さっぽろ都市計画情報提供サービス**: https://www.sonicweb-asp.jp/sapporo/ — デザインコンセプトの参照元
+- **ZoLa**（NYC Planning Labs / NYC Department of City Planning）: https://zola.planning.nyc.gov/ — ゾーンコードの地図上ラベル表示など、UIパターンの参照元
 - 建物データ: [Overture Maps](https://docs.overturemaps.org/) / [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
 - タイル配信: [stars.optgeo.org](https://github.com/hfu/stars)
 
