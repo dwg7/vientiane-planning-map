@@ -35,6 +35,8 @@
 
 ## Virgoデータ（調査済み・そのまま使える）
 
+**Virgoとは：** 正式名称 "Vientiane Integrated Urban Information GIS-based Opendata Platform"。ヴィエンチャン都のDHUP（住宅都市計画局）・PTI（公共事業交通研究所）・DPWT（公共事業交通局）が共同運営し、**JICA（国際協力機構）の支援**で構築、2023年9月26日ローンチ（[About](https://virgo.mpwt.gov.la/about/)）。基盤技術は**GeoNode**（オープンソースの空間データ基盤ソフトウェア）— World Bank GFDRR/OpenDRIプログラムがハイチ・ベリーズ・モザンビーク等25カ国以上で導入してきたのと同じ系譜の技術（ドナーはWorld BankではなくJICA）。詳細は[CASE_STUDIES.md](CASE_STUDIES.md)参照。
+
 **データセット：** `glup2030_cdudcp_v1`（ヴィエンチャン総合都市計画2030 / GLUP2030）
 **カタログページ：** https://virgo.mpwt.gov.la/catalogue/#/dataset/252 （SPAなので直接fetchでは中身が見えない。以下のAPI/OWSエンドポイントを使うこと）
 
@@ -147,4 +149,5 @@ GET https://virgo.mpwt.gov.la/geoserver/geonode/wms?service=WMS&version=1.1.1&re
 - Positronスタイル（背景の出発点）：https://stars.optgeo.org/style/positron
 - ZoLa（NYC's Zoning & Land Use Map）：https://zola.planning.nyc.gov/ 、開発元リポジトリ：https://github.com/NYCPlanning/labs-zola
 - このプロジェクト自身の技術判断の経緯ログ：[DECISIONS.md](DECISIONS.md)
+- 世界の先行事例調査（バルセロナ・北欧・北米②・シンガポール・メデジン・GeoNodeファミリー）：[CASE_STUDIES.md](CASE_STUDIES.md)
 - 関連リポジトリ（同じJICAラオス案件、プライベート）：`hfu/vientiane-basemap-baseline`

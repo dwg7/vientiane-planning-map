@@ -38,7 +38,7 @@ https://dwg7.github.io/vientiane-planning-map/
 
 ## 謝辞
 
-- **Virgo**（ラオス公共事業運輸省データ共有基盤）: https://virgo.mpwt.gov.la/ — データセット `glup2030_cdudcp_v1`
+- **Virgo**（Vientiane Integrated Urban Information GIS-based Opendata Platform）: https://virgo.mpwt.gov.la/ — データセット `glup2030_cdudcp_v1`。ヴィエンチャン都DHUP/PTI/DPWT運営、JICA支援、2023-09-26ローンチ、GeoNode基盤（[CASE_STUDIES.md](CASE_STUDIES.md)参照）
 - **さっぽろ都市計画情報提供サービス**: https://www.sonicweb-asp.jp/sapporo/ — デザインコンセプトの参照元
 - **ZoLa**（NYC Planning Labs / NYC Department of City Planning）: https://zola.planning.nyc.gov/ — ゾーンコードの地図上ラベル表示など、UIパターンの参照元
 - 建物データ: [Overture Maps](https://docs.overturemaps.org/) / [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors

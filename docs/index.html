@@ -43,6 +43,9 @@
   #panel a { color: #1a5fb4; }
   #panel h2 { font-size: 12px; margin: 12px 0 4px 0; color: #555; text-transform: uppercase; letter-spacing: 0.03em; }
 
+  .caveat { font-size: 10px; color: #777; margin: 10px 0 0 0; line-height: 1.4; }
+  .caveat code { font-size: 10px; }
+
   .legend-row { display: flex; align-items: flex-start; gap: 6px; margin: 3px 0; font-size: 11.5px; }
   .swatch { width: 12px; height: 12px; border-radius: 2px; flex: none; margin-top: 2px; }
   .line-swatch { width: 16px; height: 0; flex: none; margin-top: 6px; border-top: 2px solid rgb(180,182,178); }
@@ -130,6 +133,11 @@
     <div class="legend-row"><span class="line-swatch dashed"></span> building outline (not in OSM)</div>
     <h2>Zoning (GLUP2030)</h2>
     <div id="zone-legend"></div>
+    <p class="caveat">
+      Height/coverage/FAR shown here are Virgo's numeric fields (<code>h</code>/<code>e</code>/<code>cos</code>), not a
+      substitute for GLUP2030's official regulation text — the map shows the
+      zone, the written plan carries its full meaning.
+    </p>
   </div>
 </div>
 
