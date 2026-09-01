@@ -73,27 +73,27 @@
     display: none;
   }
   #hover-panel.visible { display: block; }
-  .hp-headline { display: flex; align-items: baseline; gap: 6px; margin-bottom: 6px; }
+  .hp-headline { display: flex; align-items: baseline; gap: 7px; margin-bottom: 7px; }
   .hp-code {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     background: #ffb454;
     color: #221a08;
     border-radius: 4px;
-    padding: 1px 5px;
+    padding: 1px 6px;
     flex: none;
   }
-  .hp-name { font-size: 15px; font-weight: 700; line-height: 1.25; }
-  .hp-stats { display: flex; gap: 12px; }
+  .hp-name { font-size: 18px; font-weight: 700; line-height: 1.25; }
+  .hp-stats { display: flex; gap: 14px; }
   .hp-stat { text-align: center; }
-  .hp-stat-value { font-size: 18px; font-weight: 700; color: #ffb454; line-height: 1.1; }
-  .hp-stat-unit { font-size: 10px; font-weight: 400; color: #d8a87f; margin-left: 1px; }
-  .hp-stat-label { font-size: 9px; color: #b7b2ab; text-transform: uppercase; letter-spacing: 0.02em; margin-top: 1px; }
+  .hp-stat-value { font-size: 22px; font-weight: 700; color: #ffb454; line-height: 1.1; }
+  .hp-stat-unit { font-size: 12px; font-weight: 400; color: #d8a87f; margin-left: 1px; }
+  .hp-stat-label { font-size: 11px; color: #b7b2ab; text-transform: uppercase; letter-spacing: 0.02em; margin-top: 1px; }
   .hp-raw {
-    margin-top: 6px;
-    padding-top: 5px;
+    margin-top: 7px;
+    padding-top: 6px;
     border-top: 1px solid rgba(255,255,255,0.15);
-    font: 9px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     color: #8a8680;
     word-break: break-word;
   }
@@ -119,8 +119,8 @@
 
 <div id="map"></div>
 
-<div id="panel">
-  <h1 id="panel-toggle">Vientiane Planning Map <span class="toggle" id="panel-toggle-icon">&minus;</span></h1>
+<div id="panel" class="collapsed">
+  <h1 id="panel-toggle">Vientiane Planning Map <span class="toggle" id="panel-toggle-icon">+</span></h1>
   <div class="body">
     <p>
       A prototype integrating Vientiane's zoning plan (Virgo/GLUP2030, colored
