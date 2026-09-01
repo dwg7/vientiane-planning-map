@@ -37,7 +37,7 @@
 
 **Virgoとは：** 正式名称 "Vientiane Integrated Urban Information GIS-based Opendata Platform"。ヴィエンチャン都のDHUP（住宅都市計画局）・PTI（公共事業交通研究所）・DPWT（公共事業交通局）が共同運営し、**JICA（国際協力機構）の支援**で構築、2023年9月26日ローンチ（[About](https://virgo.mpwt.gov.la/about/)）。基盤技術は**GeoNode**（オープンソースの空間データ基盤ソフトウェア）— World Bank GFDRR/OpenDRIプログラムがハイチ・ベリーズ・モザンビーク等25カ国以上で導入してきたのと同じ系譜の技術（ドナーはWorld BankではなくJICA）。詳細は[CASE_STUDIES.md](CASE_STUDIES.md)参照。
 
-**データセット：** `glup2030_cdudcp_v1`（ヴィエンチャン総合都市計画2030 / GLUP2030）
+**データセット：** `glup2030_cdudcp_v1`（ヴィエンチャン総合都市計画2030 / GLUP2030）。**"2030"の由来：** JICAが2010年1月〜2011年3月に実施した「ヴィエンチャン都市圏開発マスタープラン策定調査」の成果物 "Vientiane Master Plan 2030" (VMP2030) がこのデータの源流（[CASE_STUDIES.md](CASE_STUDIES.md)参照）。
 **カタログページ：** https://virgo.mpwt.gov.la/catalogue/#/dataset/252 （SPAなので直接fetchでは中身が見えない。以下のAPI/OWSエンドポイントを使うこと）
 
 **REST APIでのメタデータ取得：**
