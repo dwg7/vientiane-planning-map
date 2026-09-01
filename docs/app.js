@@ -41,14 +41,18 @@ const DEFAULT_VIEW = { center: [102.61, 17.97], zoom: 14 };
 
 const LINE_COLOR = "rgb(180, 182, 178)";
 
-// Both OSM-sourced and non-OSM building outlines share this one gray value.
-// A prior version distinguished them by lightness (dark vs faint gray), but
-// sitting on top of the zoning fill's saturated, meaningful hues, a lightness
-// difference reads as if it were *also* meaningful -- like a second, competing
-// legend. Keeping value/hue fixed and switching the visual channel instead
-// (dashed vs solid, thin vs slightly thicker) keeps "is this in OSM" legible
-// without stealing attention from the zoning color coding.
-const BUILDING_LINE_COLOR = "rgb(110, 110, 110)";
+// Both OSM-sourced and non-OSM building outlines share this one gray value --
+// the same muted tone as the rest of the converted linework (water, park,
+// landuse, landcover all keep Positron's original, quite pale fill colors,
+// just as line-color now). A prior version picked a much darker, more
+// saturated gray for buildings specifically, which fought with both the
+// zoning fill's meaningful color coding *and* the crisp white road casing
+// above it -- buildings ended up visually louder than roads, inverting the
+// basemap's intended hierarchy (roads primary, buildings/land quiet
+// context). Distinguishing OSM vs non-OSM by dash pattern and width instead
+// of lightness keeps that legible without buildings competing for
+// attention.
+const BUILDING_LINE_COLOR = LINE_COLOR;
 
 // Does `sources` (a JSON array of {provider, ...} objects, serialized as a
 // string) mention OSM as one of the fused providers at all? Reused verbatim
