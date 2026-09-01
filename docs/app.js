@@ -155,13 +155,26 @@ async function main() {
     insertAt,
     0,
     // Zoning first, so the linework basemap above (roads, labels) stays
-    // legible on top of the translucent zoning fill.
+    // legible on top of the translucent zoning fill. Opacity fades with
+    // zoom rather than sitting at one flat value -- modeled on ZoLa's own
+    // shipped style (NYCPlanning/labs-zola's "zd-fill" layer: fill-opacity
+    // 0.3 at z15 dropping to 0 by z16, with the outline/line-width taking
+    // over as the primary cue up close). Virgo's own hues are kept exactly
+    // as published (CLAUDE.md: use the real palette, don't invent pastel
+    // versions) -- opacity is the only lever, per user feedback that the
+    // flat 0.55 read as too dark/heavy and buried the basemap underneath.
+    // Unlike ZoLa's fine-grained per-lot districts, GLUP2030's zones stay
+    // legible at building scale, so this fades toward a soft wash rather
+    // than to fully transparent.
     {
       id: "zoning-fill",
       type: "fill",
       source: "zoning",
       "source-layer": "zoning",
-      paint: { "fill-color": ZONE_FILL_MATCH, "fill-opacity": 0.55 },
+      paint: {
+        "fill-color": ZONE_FILL_MATCH,
+        "fill-opacity": ["interpolate", ["linear"], ["zoom"], 10, 0.4, 14, 0.32, 18, 0.2],
+      },
     },
     {
       id: "zoning-outline",
@@ -170,7 +183,7 @@ async function main() {
       "source-layer": "zoning",
       paint: {
         "line-color": "#808080",
-        "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.5, 16, 1.5],
+        "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.5, 16, 1.5, 18, 2],
       },
     },
     // Buildings on top of zoning, distinguished only by OSM involvement --
