@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vientiane Planning Map</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.6.0/dist/maplibre-gl.css">
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+  #panel {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    max-width: 320px;
+    max-height: calc(100% - 24px);
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 8px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+    font-size: 13px;
+    line-height: 1.5;
+    color: #222;
+    z-index: 1;
+  }
+  #panel h1 {
+    font-size: 15px;
+    margin: 0;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  #panel.collapsed h1 { margin: 0; }
+  #panel .body { margin-top: 6px; }
+  #panel.collapsed .body { display: none; }
+  #panel h1 .toggle { font-size: 12px; color: #666; flex: none; }
+  #panel p { margin: 0 0 8px 0; }
+  #panel a { color: #1a5fb4; }
+  #panel h2 { font-size: 12px; margin: 12px 0 4px 0; color: #555; text-transform: uppercase; letter-spacing: 0.03em; }
+
+  .legend-row { display: flex; align-items: flex-start; gap: 6px; margin: 3px 0; font-size: 11.5px; }
+  .swatch { width: 12px; height: 12px; border-radius: 2px; flex: none; margin-top: 2px; }
+  .line-swatch { width: 16px; height: 2px; flex: none; margin-top: 6px; }
+
+  #hover-panel {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    width: fit-content;
+    max-width: 260px;
+    background: rgba(20, 20, 24, 0.88);
+    color: #f5e3d6;
+    border-radius: 5px;
+    padding: 4px 7px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    font: 10px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    z-index: 1;
+    display: none;
+  }
+  #hover-panel.visible { display: block; }
+  #hover-panel .hp-row { white-space: pre-wrap; word-break: break-word; }
+  #hover-panel .hp-key { color: #d8a87f; }
+
+  #legal {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    font-size: 10px;
+    color: #333;
+    background: rgba(255,255,255,0.7);
+    padding: 2px 6px;
+    border-radius: 4px;
+    z-index: 1;
+    text-align: right;
+  }
+
+  .maplibregl-popup-content h4 { margin: 0 0 4px 0; font-size: 13px; }
+  .maplibregl-popup-content p { margin: 2px 0; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="panel">
+  <h1 id="panel-toggle">Vientiane Planning Map <span class="toggle" id="panel-toggle-icon">&minus;</span></h1>
+  <div class="body">
+    <p>
+      A prototype integrating Vientiane's zoning plan (Virgo/GLUP2030, colored
+      fill) with basemap-equivalent building/land data (OSM &amp; Overture,
+      linework only) — modeled on Sapporo's city-planning information
+      service.
+    </p>
+    <h2>Basemap linework</h2>
+    <div class="legend-row"><span class="line-swatch" style="background:rgb(120,122,118)"></span> building outline (OSM-sourced)</div>
+    <div class="legend-row"><span class="line-swatch" style="background:rgb(200,201,198)"></span> building outline (not in OSM)</div>
+    <h2>Zoning (GLUP2030)</h2>
+    <div id="zone-legend"></div>
+  </div>
+</div>
+
+<div id="hover-panel"></div>
+
+<div id="legal">
+  Zoning: <a href="https://virgo.mpwt.gov.la/" target="_blank" rel="noopener">Virgo</a> (MPWT Laos) ·
+  Buildings: <a href="https://docs.overturemaps.org/" target="_blank" rel="noopener">Overture Maps</a> /
+  <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OSM</a> contributors<br>
+  Design concept: <a href="https://www.sonicweb-asp.jp/sapporo/" target="_blank" rel="noopener">さっぽろ都市計画情報提供サービス</a>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

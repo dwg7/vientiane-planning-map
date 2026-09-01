@@ -1,0 +1,299 @@
+{"Legend": [{
+  "layerName": "glup2030_cdudcp_v1",
+  "title": "glup2030_cdudcp_v1",
+  "rules":   [
+    {"symbolizers": [{"Text":     {
+      "label": "[zoning]",
+      "fonts": [      {
+        "font-family": ["SansSerif"],
+        "font-style": "normal",
+        "font-weight": "bold",
+        "font-size": "12"
+      }],
+      "fill": "#333333",
+      "fill-opacity": "1.0",
+      "graphic": {},
+      "label-placement":       {
+        "rotation": "0.0",
+        "x-displacement": "0",
+        "y-displacement": "0"
+      },
+      "halo":       {
+        "radius": "1",
+        "fill": "#FFFFFF",
+        "fill-opacity": "1.0"
+      }
+    }}]},
+        {
+      "name": "Zpp-Ua: ເຂດປົກປັກຮັກສາເມືອງເກົ່າ",
+      "filter": "[zoning IN ('Zpp-Ua')]",
+      "symbolizers":       [
+        {"Text":         {
+          "label": "[strConcat(strConcat(strConcat(strConcat(strConcat(strConcat(strConcat(strConcat(strConcat(strConcat('\nh: ',' '),h),' '),'\ne: '),' '),e),' '),'\ncos: '),' '),cos)]",
+          "fonts": [          {
+            "font-family": ["SansSerif"],
+            "font-style": "normal",
+            "font-weight": "bold",
+            "font-size": "9"
+          }],
+          "fill": "#333333",
+          "fill-opacity": "1.0",
+          "graphic": {},
+          "label-placement":           {
+            "rotation": "0.0",
+            "x-displacement": "-5",
+            "y-displacement": "-18"
+          },
+          "halo":           {
+            "radius": "1",
+            "fill": "#FFFFFF",
+            "fill-opacity": "1.0"
+          }
+        }},
+        {"Polygon":         {
+          "stroke": "#9b9b9b",
+          "stroke-width": "1",
+          "stroke-opacity": "1",
+          "stroke-linecap": "butt",
+          "stroke-linejoin": "miter",
+          "fill": "#7030A0",
+          "fill-opacity": "1"
+        }}
+      ]
+    },
+        {
+      "name": "Zpp-Ub: ເຂດສະຖານບູຮານ",
+      "filter": "[zoning IN ('Zpp-Ub')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#5A2A82",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "UAa: ເຂດສູນການຄ້າ ແລະ ປົກຄອງ",
+      "filter": "[zoning IN ('UAa')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#FF0101",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "UBa: ເຂດອ້ອມໃຈກາງເມືອງທີ່ນອນໃນແລວການບິນ",
+      "filter": "[zoning IN ('UBa')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#D60093",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "UBb: ເຂດອ້ອມໃຈກາງເມືອງ",
+      "filter": "[zoning IN ('UBb')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#FF66CC",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "UCa: ເຂດລຽບແມ່ນໍ້າທີ່ນອນໃນແລວການບິນ",
+      "filter": "[zoning IN ('UCa')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#FFC002",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "UCb: ເຂດລຽບແມ່ນໍ້າຂອງ",
+      "filter": "[zoning IN ('UCb')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#FFD966",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "UDa: ເຂດອ້ອມຮອບຕົວເມືອງທີ່ນອນໃນແລວການບິນ",
+      "filter": "[zoning IN ('UDa')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#FFF2CC",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "UDb: ເຂດອ້ອມຮອບຕົວເມືອງທີ່ຕິດພັນກັບກະສິກໍາ",
+      "filter": "[zoning IN ('UDb')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#F5EC3D",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "UF: ເຂດບ້ານທີອ້ອມຮອບດ້ວຍທົ່ງນາ",
+      "filter": "[zoning IN ('UF')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#7F6000",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "UEa: ເຂດຂະຫຍາຍຕົວເມືອງ",
+      "filter": "[zoning IN ('UEa')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#9DC3E6",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "UEb: ເຂດສົ່ງເສີມການພັດທະນາຕົວເມືອງ",
+      "filter": "[zoning IN ('UEb')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#2E75B6",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "UEi: ເຂດອຸສາຫະກຳ",
+      "filter": "[zoning IN ('UEi')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#C9C9C9",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "T: ເຂດຂົນສົ່ງ",
+      "filter": "[zoning IN ('T')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#8BE1E5",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "Ta: ເຂດຂົນສົ່ງທາງອາກາດ",
+      "filter": "[zoning IN ('Ta')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#8BE1E5",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "Ef: ເຂດການສຶກສາ",
+      "filter": "[zoning IN ('Ef')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#8BE1E5",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "Em: ເຂດທະຫານ ແລະ ເຂດປ້ອງກັນຊາດ",
+      "filter": "[zoning IN ('Em')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#8E7536",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "N: ເຂດກະສິກຳ",
+      "filter": "[zoning IN ('N')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#A6D86E",
+        "fill-opacity": "1"
+      }}]
+    },
+        {
+      "name": "NE: ເຂດສະຫງວນເພື່ອນໍາໃຊ້ສາທາລະນະ",
+      "filter": "[zoning IN ('NE')]",
+      "symbolizers": [{"Polygon":       {
+        "stroke": "#777777",
+        "stroke-width": "1",
+        "stroke-opacity": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "miter",
+        "fill": "#278A22",
+        "fill-opacity": "1"
+      }}]
+    }
+  ]
+}]}
