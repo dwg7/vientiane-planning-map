@@ -322,15 +322,15 @@ function showHoverInfo(feature) {
     </div>
     <div class="hp-stats">
       <div class="hp-stat">
-        <div class="hp-stat-value">${escapeHtml(String(p.h))}<span class="hp-stat-unit">m</span></div>
+        <div class="hp-stat-value">${formatStat(p.h, (v) => v)}<span class="hp-stat-unit">m</span></div>
         <div class="hp-stat-label">height limit</div>
       </div>
       <div class="hp-stat">
-        <div class="hp-stat-value">${escapeHtml(String(Math.round(p.e * 100)))}<span class="hp-stat-unit">%</span></div>
+        <div class="hp-stat-value">${formatStat(p.e, (v) => Math.round(v * 100))}<span class="hp-stat-unit">%</span></div>
         <div class="hp-stat-label">coverage (e)</div>
       </div>
       <div class="hp-stat">
-        <div class="hp-stat-value">${escapeHtml(String(Math.round(p.cos * 100)))}<span class="hp-stat-unit">%</span></div>
+        <div class="hp-stat-value">${formatStat(p.cos, (v) => Math.round(v * 100))}<span class="hp-stat-unit">%</span></div>
         <div class="hp-stat-label">floor area ratio (cos)</div>
       </div>
     </div>
@@ -339,15 +339,25 @@ function showHoverInfo(feature) {
   panel.classList.add("visible");
 }
 
+// Virgo represents "no value specified" as 0 in h/e/cos, not as null/absent
+// -- a Transport or Military zone with h=0/e=0/cos=0 doesn't mean "0m height
+// limit, 0% buildable", it means the field wasn't given a value. Showing
+// "0m"/"0%" reads as an actual (and false) regulation, so render it as "-"
+// instead. Each field is checked independently (e.g. Agriculture Zone has
+// h=10 but e=0/cos=0 -- a real height limit alongside two unset fields).
+function formatStat(value, transform) {
+  return value === 0 ? "-" : escapeHtml(String(transform(value)));
+}
+
 function showZoningPopup(map, e) {
   const p = e.features[0].properties;
   new maplibregl.Popup()
     .setLngLat(e.lngLat)
     .setHTML(
       `<h4>${escapeHtml(p.zoning)} — ${escapeHtml(p.zone_name)}</h4>
-       <p>Height limit: ${escapeHtml(String(p.h))} m<br>
-       Coverage ratio (e): ${escapeHtml(String(Math.round(p.e * 100)))}%<br>
-       Floor area ratio (cos): ${escapeHtml(String(Math.round(p.cos * 100)))}%</p>`
+       <p>Height limit: ${formatStat(p.h, (v) => v)} m<br>
+       Coverage ratio (e): ${formatStat(p.e, (v) => Math.round(v * 100))}%<br>
+       Floor area ratio (cos): ${formatStat(p.cos, (v) => Math.round(v * 100))}%</p>`
     )
     .addTo(map);
 }
