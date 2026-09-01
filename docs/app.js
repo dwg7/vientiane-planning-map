@@ -173,26 +173,6 @@ async function main() {
         "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.5, 16, 1.5],
       },
     },
-    // Zone codes rendered directly on the map, bold and reasonably large --
-    // modeled on NYC Planning Labs' ZoLa (zola.planning.nyc.gov), which
-    // labels every zoning district this way at parcel zoom.
-    {
-      id: "zoning-label",
-      type: "symbol",
-      source: "zoning",
-      "source-layer": "zoning",
-      minzoom: 10,
-      layout: {
-        "text-field": ["get", "zoning"],
-        "text-size": 14,
-        "text-font": ["Noto Sans Bold"],
-      },
-      paint: {
-        "text-color": "#2a2a2a",
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1.4,
-      },
-    },
     // Buildings on top of zoning, distinguished only by OSM involvement --
     // no height/floor logic here, unlike height-coverage. Same color for
     // both (see BUILDING_LINE_COLOR); dashed + slightly thinner for
@@ -220,6 +200,43 @@ async function main() {
       paint: { "line-color": BUILDING_LINE_COLOR, "line-width": 0.8 },
     }
   );
+
+  // Zone codes rendered directly on the map, bold and reasonably large --
+  // modeled on NYC Planning Labs' ZoLa (zola.planning.nyc.gov), which
+  // labels every zoning district this way at parcel zoom. Pushed to the
+  // end for now; the pass below moves it (and every other label) above
+  // every fill and line regardless of position here.
+  style.layers.push({
+    id: "zoning-label",
+    type: "symbol",
+    source: "zoning",
+    "source-layer": "zoning",
+    minzoom: 10,
+    layout: {
+      "text-field": ["get", "zoning"],
+      "text-size": 14,
+      "text-font": ["Noto Sans Bold"],
+    },
+    paint: {
+      "text-color": "#2a2a2a",
+      "text-halo-color": "#ffffff",
+      "text-halo-width": 1.4,
+    },
+  });
+
+  // Cartographic principle: labels sit above every fill and line, always --
+  // never let basemap linework or another layer's fill trample a label
+  // just because it happens to come later in the source style's own layer
+  // order. Positron's own "water_name" symbol layer sits surprisingly
+  // early (right after landcover_wood), so without this pass, zone-code
+  // labels inserted near it would render underneath most of the road/rail
+  // network and every building outline. Stable-partition non-symbol
+  // layers first, symbol layers last, preserving relative order within
+  // each group -- this only reorders label-vs-everything, not
+  // fill-vs-line-vs-fill ordering among themselves.
+  const nonSymbolLayers = style.layers.filter((l) => l.type !== "symbol");
+  const symbolLayers = style.layers.filter((l) => l.type === "symbol");
+  style.layers = [...nonSymbolLayers, ...symbolLayers];
 
   const map = new maplibregl.Map({
     container: "map",
