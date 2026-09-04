@@ -31,7 +31,7 @@
    - 建物：`type: "line"`の輪郭線のみ、無彩色。`sources`フィールドに`provider:"osm"`を含むかどうかで判定（`height-coverage`の`HAS_OSM_SOURCE`フィルタ式をそのまま再利用可能、高さの判定は不要）。**ただし色分けは明度差ではなくダッシュパターン・線幅で行う**（実装時の実地の指摘で修正 — 経緯は[DECISIONS.md](DECISIONS.md)参照。ゾーニングの塗りの上に乗る線なので、明度差は「意図しない別の意味」を持つように見えてしまう）。
    - 水域・土地利用・土地被覆・公園：`fill`ではなく境界線のみ。線の色調はPositron本来の淡いトーンを踏襲し、建物線とも統一する（道路の白いケーシングが視覚的な主役であり続けるように、背景線画は全体的に淡く静かに）。
    - 道路・地名ラベル：Positronスタイルをベースに、線画としての硬質さを保つ。
-2. **ゾーニング（前面、半透明の塗り）**：Virgo（ラオス公共事業運輸省のデータ共有基盤）のゾーニングデータをPMTiles化して重ねる。色相はVirgoの実際の配色をそのまま使用し、不透明度を50〜60%程度に落として下の基本図が透けるようにする。クリック/ホバーでゾーン名・高さ制限・建蔽率・容積率を表示。
+2. **ゾーニング（前面、半透明の塗り）**：Virgo（ラオス公共事業運輸省のデータ共有基盤）のゾーニングデータをPMTiles化して重ねる。色相はVirgoの実際の配色をそのまま使用。不透明度は固定50〜60%ではなく**ズームに応じて0.4→0.2程度にフェードする**（実装時にZoLaの実コードを参照して修正、経緯は[DECISIONS.md](DECISIONS.md)#7）。クリック/ホバーでゾーン名・高さ制限・建蔽率・容積率を表示（値が`0`の場合はVirgoの「未設定」を意味するため`-`表示、DECISIONS.md参照）。
 
 ## Virgoデータ（調査済み・そのまま使える）
 
@@ -94,7 +94,7 @@ GET https://virgo.mpwt.gov.la/geoserver/geonode/wms?service=WMS&version=1.1.1&re
 1. 上記WFSでGeoJSON取得
 2. EPSG:32648 → EPSG:4326へ再投影（`ogr2ogr`等）
 3. `tippecanoe`でPMTiles化（63件と小規模。過度な簡略化は不要、広いズーム帯でそのまま出せる）
-4. 生成したPMTilesをこのリポジトリ（または適切な場所）に置き、`stars`エージェントに依頼して`config/martin.yaml`にリモートソースとして登録してもらう（`height-coverage`の`overture_buildings`と同じ、ローカルコピー不要の`pmtiles.sources`パターン）
+4. 生成したPMTilesをこのリポジトリに置く。**実ファイルの本番配置は`hfu/stars`へPRできない**（`data/.gitignore`が`*.pmtiles`を除外、方針は[CONTRIBUTING.md](https://github.com/hfu/stars/blob/main/CONTRIBUTING.md)）——`config/martin.yaml`の変更だけをPRし、実ファイルはGit外（同一マシンならパス通知だけで足りる）でstarsエージェントに転送してもらう。`overture_buildings`のような巨大ファイル向けの**リモートURL**パターンではなく、`pmtiles_jma_1saibun_hkd`と同じ**ローカルパス**パターンになる（経緯：[DECISIONS.md](DECISIONS.md)#2）
 5. ゾーニング用の新規`style.json`（上記配色を反映、半透明、ラベルつき）を作成し、`hfu/stars`リポジトリへPRする（`CONTRIBUTING.md`のゲートキーパーフローに従う。`height-coverage`が`styles/positron.json`を追加した[PR #5](https://github.com/hfu/stars/pull/5)が実例）
 6. マージ・本番反映後、`stars.optgeo.org/style/<名前>`として利用可能になる
 
@@ -149,5 +149,6 @@ GET https://virgo.mpwt.gov.la/geoserver/geonode/wms?service=WMS&version=1.1.1&re
 - Positronスタイル（背景の出発点）：https://stars.optgeo.org/style/positron
 - ZoLa（NYC's Zoning & Land Use Map）：https://zola.planning.nyc.gov/ 、開発元リポジトリ：https://github.com/NYCPlanning/labs-zola
 - このプロジェクト自身の技術判断の経緯ログ：[DECISIONS.md](DECISIONS.md)
+- 現在の状態・保留中の作業のスナップショット：[HANDOVER.md](HANDOVER.md)
 - 世界の先行事例調査（バルセロナ・北欧・北米②・シンガポール・メデジン・GeoNodeファミリー）：[CASE_STUDIES.md](CASE_STUDIES.md)
 - 関連リポジトリ（同じJICAラオス案件、プライベート）：`hfu/vientiane-basemap-baseline`
