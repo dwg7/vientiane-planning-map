@@ -351,13 +351,27 @@ function formatStat(value, transform) {
 
 function showZoningPopup(map, e) {
   const p = e.features[0].properties;
+  const [lon, lat] = e.lngLat.toArray();
+
+  // Plain Google Maps URL scheme -- no API key, no signature, no billing
+  // (unlike the Street View Static API or JS Embed API, which require
+  // both). heading/pitch are deliberately omitted: without them, Google
+  // aims the panorama at the given coordinate from whatever the nearest
+  // available imagery is on its own. Ported from height-coverage
+  // (dwg7/height-coverage@e76ea1c) -- same rationale applies here.
+  const streetViewUrl = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat.toFixed(6)},${lon.toFixed(6)}&fov=90`;
+
   new maplibregl.Popup()
     .setLngLat(e.lngLat)
     .setHTML(
       `<h4>${escapeHtml(p.zoning)} — ${escapeHtml(p.zone_name)}</h4>
        <p>Height limit: ${formatStat(p.h, (v) => v)} m<br>
        Coverage ratio (e): ${formatStat(p.e, (v) => Math.round(v * 100))}%<br>
-       Floor area ratio (cos): ${formatStat(p.cos, (v) => Math.round(v * 100))}%</p>`
+       Floor area ratio (cos): ${formatStat(p.cos, (v) => Math.round(v * 100))}%</p>
+       <p class="streetview-row">
+         <a href="${escapeHtml(streetViewUrl)}" target="_blank" rel="noopener">View on Google Street View &#8599;</a>
+         <span class="streetview-note">Just for a look -- not a source to trace over for editing.</span>
+       </p>`
     )
     .addTo(map);
 }

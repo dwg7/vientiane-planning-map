@@ -102,3 +102,13 @@ CLAUDE.md記載のスキーマ・配色表を鵜呑みにせず、着手前に�
 **修正**：`h`/`e`/`cos`それぞれについて、値が`0`のときは`-`を表示するヘルパー関数（`formatStat`）を導入。3フィールドを一括判定せず、フィールドごとに独立にチェックする（Nのケースに対応するため）。ホバーパネル下部の生データ行（`zoning=Ta h=0 e=0 cos=0`）はそのまま残し、技術的な参照は失わない。
 
 **留意点**：この判断はユーザーの解釈に基づくものであり、Virgoの正式な規定文書を確認して確定させたわけではない（GLUP2030の原文には当たっていない）。「N（農業区）のe=0が実際に『建築禁止』という意味のある規制なのか、単なる未入力なのか」は、今回はユーザーの判断（N/A扱い）を採用したが、将来的に疑義が生じたら再検証すること。
+
+## 9. ゾーニングポップアップにGoogle Street Viewリンクを追加（height-coverageから移植、2026-09-05）
+
+`dwg7/height-coverage`が同種の機能（建物ポップアップへのStreet Viewリンク）を先行実装（[e76ea1c](https://github.com/dwg7/height-coverage/commit/e76ea1c)、判断経緯は同リポジトリのDECISIONS.md項目12）。height-coverage-a5から実装内容の共有を受け、`showZoningPopup()`（`docs/app.js`）にそのまま移植した。
+
+**URLスキーム**：`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint={lat},{lng}&fov=90` — APIキー・署名・従量課金いずれも不要なプレーンURL。Street View Static API / JS Embed APIは使わない（どちらもAPIキー＋署名＋課金が必須）。
+
+**座標**：クリックイベントの`e.lngLat`をそのまま使用（ポリゴン重心の計算はしない）。`heading`/`pitch`は指定しない——省略するとGoogleが最寄りの撮影地点から自動的に妥当な方向を向いてくれるため、方位計算が不要になる。Street View撮影実績が無い場所でも、Googleが通常の地図表示にフォールバックするだけなので、事前のカバレッジ判定も不要。
+
+**UI上の区別**：ゾーン情報（高さ制限・建蔽率・容積率）とは`border-top`区切り線で視覚的に分離し、下線付きのプレーンテキストリンクとして表示（ボタンではない）。直下に「Just for a look -- not a source to trace over for editing.」の注記を必ず添える。height-coverageと同じ設計判断——「見るためのリンク」と「編集を後押しするアクション」（このプロジェクトには編集リンク自体がないが、規制値という一次情報）を混同させないため。`target="_blank" rel="noopener"`必須。
