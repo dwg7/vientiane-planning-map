@@ -8,8 +8,8 @@ https://dwg7.github.io/vientiane-planning-map/
 
 ## 2層構造
 
-1. **背景（都市計画基本図相当、線画）** — `stars.optgeo.org` の OSM planet タイル（Positronスタイルをベースに全レイヤーを塗りから線画へ変換）＋ Overture buildings タイル。建物の輪郭線は、`sources` に OSM が含まれるかどうかを実線/破線と線幅で区別しています（明度差にしなかった理由は[DECISIONS.md](DECISIONS.md)#4。高さは見ません — その判定は height-coverage の役割）。
-2. **ゾーニング（前面、半透明の塗り）** — ラオス公共事業運輸省のデータ共有基盤 **Virgo** の GLUP2030（ヴィエンチャン総合都市計画2030）データ。実際のVirgo配色をそのまま使用し、不透明度はズームに応じてフェードします（[DECISIONS.md](DECISIONS.md)#7）。クリック/ホバーでゾーン名・高さ制限・建蔽率・容積率を表示（値が`0`＝未設定の場合は`-`表示）。
+1. **背景（都市計画基本図相当、線画）** — `stars.optgeo.org` の OSM planet タイル（Positronスタイルをベースに全レイヤーを塗りから線画へ変換）＋ Overture buildings タイル。建物の輪郭線は主要道路と同じ白（`#ffffff`）で、`sources` に OSM が含まれるかどうかを実線/破線と線幅で区別しています（明度差にしなかった理由は[DECISIONS.md](DECISIONS.md)#4・#12。高さは見ません — その判定は height-coverage の役割）。
+2. **ゾーニング（前面、半透明の塗り）** — ラオス公共事業運輸省のデータ共有基盤 **Virgo** の GLUP2030（ヴィエンチャン総合都市計画2030）データ。実際のVirgo配色をそのまま使用し、不透明度はズームに応じてフェードします（[DECISIONS.md](DECISIONS.md)#7）。ホバーでゾーン名・高さ制限・建蔽率・容積率を表示（値が`0`＝未設定の場合は`-`表示）。クリックすると、その地点を囲む8方向ボタンから見たい方角を選んでGoogle Street Viewを開けます（[DECISIONS.md](DECISIONS.md)#9・#11・#12）。
 
 ## データパイプライン
 

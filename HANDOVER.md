@@ -8,7 +8,7 @@
 - データパイプライン（Virgo WFS→EPSG:4326再投影→PMTiles化→`hfu/stars`でのホスティング）完了。[hfu/stars#7](https://github.com/hfu/stars/pull/7)（データソース登録）・[#8](https://github.com/hfu/stars/pull/8)（ゾーニング用style.json）ともマージ・本番反映済み
 - 背景線画＋ゾーニング半透明塗りの2層構造、ホバー/クリックでのゾーン情報表示、実装済み
 - ユーザーからの一連のUI改修（ホバーパネル再設計、建物線のトーンマネジメント、ラベルの最前面化、ゾーニング塗りの不透明度のズーム対応、`h`/`e`/`cos`未設定値の`-`表示）を反映済み。詳細は[DECISIONS.md](DECISIONS.md)
-- ゾーニング塗り（`zoning-fill`）のクリックポップアップはGoogle Street View起動専用（`dwg7/height-coverage`の実装[e76ea1c](https://github.com/dwg7/height-coverage/commit/e76ea1c)を移植・その後改修）。8方向コンパス＋中央autoボタンから見たい方角を選べる（地図回転時は`map.getBearing()`で真の方位に補正）。ゾーンコード・h/e/cosなどの数値情報はホバーパネル（左下）と重複するためポップアップからは削除済み。詳細はDECISIONS.md #9〜#11
+- ゾーニング塗り（`zoning-fill`）のクリックでGoogle Street Viewが起動（`dwg7/height-coverage`の実装[e76ea1c](https://github.com/dwg7/height-coverage/commit/e76ea1c)を移植・その後改修）。吹き出しポップアップではなく、クリック地点の周囲に8方向ボタンを直接配置するカスタムコンパスUI（地図回転時は`map.getBearing()`で真の方位に補正）。初回クリック時のみ注意書きをモーダルダイアログで表示（`localStorage`で既読管理）。ゾーンコード・h/e/cosなどの数値情報はホバーパネル（左下）と重複するため表示しない。建物外周線は主要道路と同じ`#ffffff`（サイトの重心が基本図データ充実度の可視化に移ったことに伴う変更）。詳細はDECISIONS.md #9〜#12
 - `CASE_STUDIES.md`に世界の先行事例（ZoLa、バルセロナ、北欧、北米②、シンガポール、メデジン、GeoNodeファミリー、JICA都市・地域開発グループ）を記録済み
 - dwg7横断の知見集約リポジトリ`cafebabe`へ、先行事例研究パターン・データ出自調査パターン・スタイル設計のカートグラフィー原則の3件を提供済み
 

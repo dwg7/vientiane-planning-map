@@ -41,18 +41,18 @@ const DEFAULT_VIEW = { center: [102.61, 17.97], zoom: 14 };
 
 const LINE_COLOR = "rgb(180, 182, 178)";
 
-// Both OSM-sourced and non-OSM building outlines share this one gray value --
-// the same muted tone as the rest of the converted linework (water, park,
-// landuse, landcover all keep Positron's original, quite pale fill colors,
-// just as line-color now). A prior version picked a much darker, more
-// saturated gray for buildings specifically, which fought with both the
-// zoning fill's meaningful color coding *and* the crisp white road casing
-// above it -- buildings ended up visually louder than roads, inverting the
-// basemap's intended hierarchy (roads primary, buildings/land quiet
-// context). Distinguishing OSM vs non-OSM by dash pattern and width instead
-// of lightness keeps that legible without buildings competing for
-// attention.
-const BUILDING_LINE_COLOR = LINE_COLOR;
+// Building outlines are pure white, matching the road network's own inner
+// fill color (Positron's highway_major_inner / highway_motorway_inner are
+// both #fff) rather than the muted LINE_COLOR used for water/landuse/park.
+// This is a deliberate reversal of an earlier decision that kept buildings
+// at LINE_COLOR specifically so they wouldn't outshine roads (DECISIONS.md
+// #4) -- the site's emphasis has shifted toward the building layer itself
+// being the thing worth looking at (basemap-completeness is the whole
+// point here), so it now gets to read at the same visual weight as the
+// road network instead of receding into the background linework. OSM vs
+// non-OSM is still told apart by dash pattern and width, not lightness
+// (DECISIONS.md #4) -- that distinction is orthogonal to this one.
+const BUILDING_LINE_COLOR = "#ffffff";
 
 // Does `sources` (a JSON array of {provider, ...} objects, serialized as a
 // string) mention OSM as one of the fused providers at all? Reused verbatim
@@ -286,6 +286,12 @@ async function main() {
   map.on("mousemove", "zoning-fill", (e) => showHoverInfo(e.features[0]));
   map.on("mouseleave", "zoning-fill", () => showHoverInfo(null));
 
+  // The compass menu's position is a one-time pixel snapshot, not tracked
+  // against the map -- close it as soon as panning/zooming/rotating would
+  // make that snapshot stale, rather than let it visually drift off its
+  // real-world point.
+  map.on("movestart", closeCompassMenu);
+
   setupPanelToggle();
   buildZoneLegend();
 }
@@ -349,23 +355,64 @@ function formatStat(value, transform) {
   return value === 0 ? "-" : escapeHtml(String(transform(value)));
 }
 
-// 8 compass directions plus a center "auto" cell, laid out as a 3x3 grid
-// in DOM/CSS-grid order (NW N NE / W auto E / SW S SE). screenOffset is
-// degrees clockwise from "up" on screen (0 = up), matching how the arrows
-// visually sit around the click point.
+// 8 compass directions arranged in a ring around the click point.
+// screenOffset is degrees clockwise from "up" on screen (0 = up), matching
+// how the arrows visually sit around that point. No center/"auto" button --
+// it would sit exactly on the click point itself, which is both redundant
+// (Google already falls back to the nearest imagery when no heading is
+// given at all, so "auto" isn't a distinct choice worth a button) and a
+// real hit-testing hazard: a clickable element placed exactly under the
+// cursor that opened the menu risks catching that same gesture's tail end.
 const COMPASS_DIRECTIONS = [
   { title: "Northwest", arrow: "↖", screenOffset: 315 },
   { title: "North", arrow: "↑", screenOffset: 0 },
   { title: "Northeast", arrow: "↗", screenOffset: 45 },
   { title: "West", arrow: "←", screenOffset: 270 },
-  null, // center: "auto" cell, filled in below
   { title: "East", arrow: "→", screenOffset: 90 },
   { title: "Southwest", arrow: "↙", screenOffset: 225 },
   { title: "South", arrow: "↓", screenOffset: 180 },
   { title: "Southeast", arrow: "↘", screenOffset: 135 },
 ];
 
+// Shown once ever per browser (not per session) -- the point is a single
+// piece of onboarding, not a recurring nag every time someone opens the
+// compass.
+const STREETVIEW_NOTICE_KEY = "vientianeStreetViewNoticeShown";
+
+let activeCompass = null;
+
+function closeCompassMenu() {
+  if (activeCompass) {
+    activeCompass.remove();
+    activeCompass = null;
+  }
+}
+
 function showZoningPopup(map, e) {
+  // The zoning-fill click handler runs before this listener, so stopping
+  // propagation here keeps the very click that opens the compass from also
+  // reaching the document-level "click outside closes it" listener below.
+  e.originalEvent.stopPropagation();
+
+  if (!localStorage.getItem(STREETVIEW_NOTICE_KEY)) {
+    showStreetViewNotice(() => {
+      localStorage.setItem(STREETVIEW_NOTICE_KEY, "1");
+      openCompassMenu(map, e);
+    });
+  } else {
+    openCompassMenu(map, e);
+  }
+}
+
+// Buttons sit directly on the map around the click point rather than inside
+// a speech-bubble popup -- the popup's box-and-tail chrome was extra visual
+// weight around what's now just a small ring of direction buttons.
+// Positioned with the viewport (not the map container) as the coordinate
+// space and appended to <body>, so the buttons are never clipped by the
+// map container's overflow:hidden even when the click lands near an edge.
+function openCompassMenu(map, e) {
+  closeCompassMenu();
+
   const [lon, lat] = e.lngLat.toArray();
   const viewpoint = `${lat.toFixed(6)},${lon.toFixed(6)}`;
 
@@ -373,8 +420,7 @@ function showZoningPopup(map, e) {
   // (unlike the Street View Static API or JS Embed API, which require
   // both). Ported from height-coverage (dwg7/height-coverage@e76ea1c).
   const streetViewUrl = (heading) =>
-    `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${viewpoint}&fov=90` +
-    (heading === null ? "" : `&heading=${heading}`);
+    `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${viewpoint}&fov=90&heading=${heading}`;
 
   // MapLibre's bearing is the compass direction currently facing "up" on
   // screen (0 when north-up). A screen-relative arrow (0 = up, 90 = right,
@@ -384,26 +430,77 @@ function showZoningPopup(map, e) {
   // "looking the wrong way" disorientation this compass is meant to avoid.
   const bearing = map.getBearing();
 
-  const cells = COMPASS_DIRECTIONS.map((dir) => {
-    if (!dir) {
-      return `<a class="compass-btn compass-auto" href="${escapeHtml(streetViewUrl(null))}"
-        target="_vientiane_streetview" rel="noopener" title="Look toward nearest available imagery">&#8226;</a>`;
-    }
-    const heading = Math.round((dir.screenOffset + bearing + 360) % 360);
-    return `<a class="compass-btn" href="${escapeHtml(streetViewUrl(heading))}"
-      target="_vientiane_streetview" rel="noopener" title="Look ${dir.title.toLowerCase()}">${dir.arrow}</a>`;
-  }).join("");
+  const mapRect = map.getContainer().getBoundingClientRect();
+  const anchorX = mapRect.left + e.point.x;
+  const anchorY = mapRect.top + e.point.y;
+  const RADIUS = 42;
 
-  new maplibregl.Popup()
-    .setLngLat(e.lngLat)
-    .setHTML(
-      `<div class="streetview-compass">
-         <div class="streetview-compass-label">Street View</div>
-         <div class="compass-grid">${cells}</div>
-         <span class="streetview-note">Just for a look -- not a source to trace over for editing.</span>
-       </div>`
-    )
-    .addTo(map);
+  const menu = document.createElement("div");
+  menu.className = "sv-compass";
+  menu.style.left = `${anchorX}px`;
+  menu.style.top = `${anchorY}px`;
+
+  for (const dir of COMPASS_DIRECTIONS) {
+    const a = document.createElement("a");
+    a.className = "sv-compass-btn";
+    a.target = "_vientiane_streetview";
+    a.rel = "noopener";
+
+    const heading = Math.round((dir.screenOffset + bearing + 360) % 360);
+    a.href = streetViewUrl(heading);
+    a.title = `Look ${dir.title.toLowerCase()}`;
+    a.textContent = dir.arrow;
+    const rad = (dir.screenOffset * Math.PI) / 180;
+    a.style.left = `${RADIUS * Math.sin(rad)}px`;
+    a.style.top = `${-RADIUS * Math.cos(rad)}px`;
+    menu.appendChild(a);
+  }
+
+  document.body.appendChild(menu);
+  activeCompass = menu;
+}
+
+document.addEventListener("click", (ev) => {
+  if (activeCompass && !activeCompass.contains(ev.target)) closeCompassMenu();
+});
+document.addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape") closeCompassMenu();
+});
+
+// A one-time modal, shown before the very first compass, instead of a
+// disclaimer caption crowding the ring on every click -- see the user's
+// request to keep the per-click UI to just the buttons themselves.
+function showStreetViewNotice(onAcknowledge) {
+  const overlay = document.createElement("div");
+  overlay.className = "sv-notice-overlay";
+  overlay.innerHTML = `
+    <div class="sv-notice-dialog">
+      <p>Google Street View links here are just for a look --<br>not a source to trace over for editing.</p>
+      <button type="button" class="sv-notice-ok">OK</button>
+    </div>`;
+
+  const dismiss = () => {
+    overlay.remove();
+    document.removeEventListener("keydown", onKeydown);
+    onAcknowledge();
+  };
+  const onKeydown = (ev) => {
+    if (ev.key === "Escape" || ev.key === "Enter") dismiss();
+  };
+
+  overlay.addEventListener("click", (ev) => {
+    if (ev.target === overlay || ev.target.classList.contains("sv-notice-ok")) {
+      // Without this, the same click that dismisses the dialog and opens
+      // the compass keeps bubbling to the document-level "click outside
+      // closes the compass" listener below, which would then immediately
+      // close the compass this very click just opened.
+      ev.stopPropagation();
+      dismiss();
+    }
+  });
+  document.addEventListener("keydown", onKeydown);
+
+  document.body.appendChild(overlay);
 }
 
 function escapeHtml(s) {
