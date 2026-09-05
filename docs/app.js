@@ -369,7 +369,7 @@ function showZoningPopup(map, e) {
        Coverage ratio (e): ${formatStat(p.e, (v) => Math.round(v * 100))}%<br>
        Floor area ratio (cos): ${formatStat(p.cos, (v) => Math.round(v * 100))}%</p>
        <p class="streetview-row">
-         <a href="${escapeHtml(streetViewUrl)}" target="_blank" rel="noopener">View on Google Street View &#8599;</a>
+         <a href="${escapeHtml(streetViewUrl)}" target="_vientiane_streetview" rel="noopener">View on Google Street View &#8599;</a>
          <span class="streetview-note">Just for a look -- not a source to trace over for editing.</span>
        </p>`
     )
