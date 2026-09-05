@@ -54,11 +54,11 @@ const LINE_COLOR = "rgb(180, 182, 178)";
 // (DECISIONS.md #4) -- that distinction is orthogonal to this one.
 const BUILDING_LINE_COLOR = "#ffffff";
 
-// Full opacity read as slightly too strong once every building outline is
-// pure white -- this softens it a touch without giving up the road-white
-// hue itself (color is what ties buildings to the road network visually;
-// opacity is what keeps that from being overbearing).
-const BUILDING_LINE_OPACITY = 0.85;
+// Fades in with zoom rather than snapping to visible at the layers'
+// minzoom -- invisible below z14, full strength by z17. Supersedes an
+// earlier flat 0.85 (softened the all-white outlines a touch, but not
+// zoom-dependent).
+const BUILDING_LINE_OPACITY = ["interpolate", ["linear"], ["zoom"], 14, 0, 17, 1];
 
 // Does `sources` (a JSON array of {provider, ...} objects, serialized as a
 // string) mention OSM as one of the fused providers at all? Reused verbatim
