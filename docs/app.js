@@ -54,6 +54,12 @@ const LINE_COLOR = "rgb(180, 182, 178)";
 // (DECISIONS.md #4) -- that distinction is orthogonal to this one.
 const BUILDING_LINE_COLOR = "#ffffff";
 
+// Full opacity read as slightly too strong once every building outline is
+// pure white -- this softens it a touch without giving up the road-white
+// hue itself (color is what ties buildings to the road network visually;
+// opacity is what keeps that from being overbearing).
+const BUILDING_LINE_OPACITY = 0.85;
+
 // Does `sources` (a JSON array of {provider, ...} objects, serialized as a
 // string) mention OSM as one of the fused providers at all? Reused verbatim
 // from height-coverage/app.js -- same Overture buildings schema, same source.
@@ -199,6 +205,7 @@ async function main() {
       filter: ["!", HAS_OSM_SOURCE],
       paint: {
         "line-color": BUILDING_LINE_COLOR,
+        "line-opacity": BUILDING_LINE_OPACITY,
         "line-width": 0.5,
         "line-dasharray": [1, 1.4],
       },
@@ -210,7 +217,11 @@ async function main() {
       "source-layer": "building",
       minzoom: 12,
       filter: HAS_OSM_SOURCE,
-      paint: { "line-color": BUILDING_LINE_COLOR, "line-width": 0.8 },
+      paint: {
+        "line-color": BUILDING_LINE_COLOR,
+        "line-opacity": BUILDING_LINE_OPACITY,
+        "line-width": 0.8,
+      },
     }
   );
 
@@ -476,6 +487,11 @@ function showStreetViewNotice(onAcknowledge) {
   overlay.innerHTML = `
     <div class="sv-notice-dialog">
       <p>Google Street View links here are just for a look --<br>not a source to trace over for editing.</p>
+      <p class="sv-notice-links">
+        <a href="https://www.google.com/help/terms_maps/" target="_blank" rel="noopener">Google Maps/Earth terms</a>
+        &middot;
+        <a href="https://wiki.openstreetmap.org/wiki/Google" target="_blank" rel="noopener">OSM wiki: Google</a>
+      </p>
       <button type="button" class="sv-notice-ok">OK</button>
     </div>`;
 
