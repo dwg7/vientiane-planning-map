@@ -349,29 +349,59 @@ function formatStat(value, transform) {
   return value === 0 ? "-" : escapeHtml(String(transform(value)));
 }
 
+// 8 compass directions plus a center "auto" cell, laid out as a 3x3 grid
+// in DOM/CSS-grid order (NW N NE / W auto E / SW S SE). screenOffset is
+// degrees clockwise from "up" on screen (0 = up), matching how the arrows
+// visually sit around the click point.
+const COMPASS_DIRECTIONS = [
+  { title: "Northwest", arrow: "↖", screenOffset: 315 },
+  { title: "North", arrow: "↑", screenOffset: 0 },
+  { title: "Northeast", arrow: "↗", screenOffset: 45 },
+  { title: "West", arrow: "←", screenOffset: 270 },
+  null, // center: "auto" cell, filled in below
+  { title: "East", arrow: "→", screenOffset: 90 },
+  { title: "Southwest", arrow: "↙", screenOffset: 225 },
+  { title: "South", arrow: "↓", screenOffset: 180 },
+  { title: "Southeast", arrow: "↘", screenOffset: 135 },
+];
+
 function showZoningPopup(map, e) {
-  const p = e.features[0].properties;
   const [lon, lat] = e.lngLat.toArray();
+  const viewpoint = `${lat.toFixed(6)},${lon.toFixed(6)}`;
 
   // Plain Google Maps URL scheme -- no API key, no signature, no billing
   // (unlike the Street View Static API or JS Embed API, which require
-  // both). heading/pitch are deliberately omitted: without them, Google
-  // aims the panorama at the given coordinate from whatever the nearest
-  // available imagery is on its own. Ported from height-coverage
-  // (dwg7/height-coverage@e76ea1c) -- same rationale applies here.
-  const streetViewUrl = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat.toFixed(6)},${lon.toFixed(6)}&fov=90`;
+  // both). Ported from height-coverage (dwg7/height-coverage@e76ea1c).
+  const streetViewUrl = (heading) =>
+    `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${viewpoint}&fov=90` +
+    (heading === null ? "" : `&heading=${heading}`);
+
+  // MapLibre's bearing is the compass direction currently facing "up" on
+  // screen (0 when north-up). A screen-relative arrow (0 = up, 90 = right,
+  // ...) only points at the intended real-world direction once the map's
+  // own rotation is folded back in -- otherwise a rotated map would send
+  // every direction off by the rotation amount, which is exactly the
+  // "looking the wrong way" disorientation this compass is meant to avoid.
+  const bearing = map.getBearing();
+
+  const cells = COMPASS_DIRECTIONS.map((dir) => {
+    if (!dir) {
+      return `<a class="compass-btn compass-auto" href="${escapeHtml(streetViewUrl(null))}"
+        target="_vientiane_streetview" rel="noopener" title="Look toward nearest available imagery">&#8226;</a>`;
+    }
+    const heading = Math.round((dir.screenOffset + bearing + 360) % 360);
+    return `<a class="compass-btn" href="${escapeHtml(streetViewUrl(heading))}"
+      target="_vientiane_streetview" rel="noopener" title="Look ${dir.title.toLowerCase()}">${dir.arrow}</a>`;
+  }).join("");
 
   new maplibregl.Popup()
     .setLngLat(e.lngLat)
     .setHTML(
-      `<h4>${escapeHtml(p.zoning)} — ${escapeHtml(p.zone_name)}</h4>
-       <p>Height limit: ${formatStat(p.h, (v) => v)} m<br>
-       Coverage ratio (e): ${formatStat(p.e, (v) => Math.round(v * 100))}%<br>
-       Floor area ratio (cos): ${formatStat(p.cos, (v) => Math.round(v * 100))}%</p>
-       <p class="streetview-row">
-         <a href="${escapeHtml(streetViewUrl)}" target="_vientiane_streetview" rel="noopener">View on Google Street View &#8599;</a>
+      `<div class="streetview-compass">
+         <div class="streetview-compass-label">Street View</div>
+         <div class="compass-grid">${cells}</div>
          <span class="streetview-note">Just for a look -- not a source to trace over for editing.</span>
-       </p>`
+       </div>`
     )
     .addTo(map);
 }

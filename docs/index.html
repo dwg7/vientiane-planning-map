@@ -113,21 +113,38 @@
 
   .maplibregl-popup-content h4 { margin: 0 0 4px 0; font-size: 13px; }
   .maplibregl-popup-content p { margin: 2px 0; font-size: 12px; }
-  .maplibregl-popup-content .streetview-row {
-    margin-top: 8px;
-    padding-top: 6px;
-    border-top: 1px solid rgba(0,0,0,0.1);
+  .streetview-compass-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 4px;
   }
-  .maplibregl-popup-content .streetview-row a {
+  .compass-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 28px);
+    grid-template-rows: repeat(3, 28px);
+    gap: 3px;
+  }
+  .compass-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f2f5;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 4px;
     color: #1a5fb4;
-    font-size: 12px;
-    text-decoration: underline;
+    font-size: 15px;
+    text-decoration: none;
+    line-height: 1;
   }
-  .maplibregl-popup-content .streetview-note {
+  .compass-btn:hover { background: #dceafc; }
+  .compass-btn.compass-auto { color: #999; font-size: 10px; }
+  .streetview-note {
     display: block;
     font-size: 10px;
     color: #888;
-    margin-top: 2px;
+    margin-top: 6px;
+    max-width: 168px;
   }
 </style>
 </head>
